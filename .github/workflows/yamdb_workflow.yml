@@ -61,7 +61,7 @@ jobs:
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
           sudo docker pull shamievda/yamdb_final:latest
-          cd yamdb_final
+          cd api_yamdb
           sudo docker-compose stop
           sudo docker-compose rm web
           touch .env
