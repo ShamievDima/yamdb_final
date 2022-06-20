@@ -58,11 +58,11 @@ docker-compose --version
 Скопируйте файлы docker-compose.yaml и nginx/default.conf из вашего проекта на сервер в home/<ваш_username>/docker-compose.yaml и home/<ваш_username>/nginx/default.conf соответственно:
 
 ```
-scp docker-compose.yaml shamievda@51.250.108.36
-scp default.conf shamievda@51.250.108.36:/nginx/
+scp docker-compose.yaml <USER>@<HOST>
+scp default.conf <USER>@<HOST>:/nginx/
 ```
 
-Остановка docker-compose и создание и наполнение файла env на сервере:
+Остановка docker-compose, создание и наполнение файла .env на сервере:
 
 ```
 sudo docker-compose stop
@@ -75,12 +75,29 @@ echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
 echo DB_HOST=${{ secrets.DB_HOST }} >> .env
 echo DB_PORT=${{ secrets.DB_PORT }} >> .env
 sudo docker-compose up -d
-sudo docker-compose exec -T web python manage.py makemigrations
-sudo docker-compose exec -T web python manage.py migrate
-sudo docker-compose exec -T web python manage.py collectstatic --no-input
 ```
 
-Сайт можно найти [здесь](http://51.250.108.36/admin/)
+## Развертывание приложения
+
+1. При пуше в ветку main приложение пройдет тесты, обновит образ на DockerHub и сделает деплой на сервер. Дальше необходимо подлкючиться к серверу.
+```
+ssh <USER>@<HOST>
+```
+2. Перейдите в запущенный контейнер приложения командой:
+```
+docker container exec -it <CONTAINER ID> bash
+```
+3. Внутри контейнера необходимо выполнить миграции и собрать статику приложения:
+```
+python manage.py collectstatic --no-input
+python manage.py migrate
+```
+4. Для использования панели администратора по адресу http://178.154.194.4/admin/ необходимо создать суперпользователя.
+```
+python manage.py createsuperuser.
+```
+
+Сайт можно найти [здесь](http://178.154.194.4/admin/)
 
 
 # Технологии применяемые в работе
@@ -92,6 +109,6 @@ sudo docker-compose exec -T web python manage.py collectstatic --no-input
 - YandexCloud
 - nginx
 
-# Информация об авторе
+# Автор
 
-Являюсь студентом Яндекс Практикума Python разработки 28 когорты.
+* **Дмитрий Шамиев** - [ShamievDima](https://https://github.com/ShamievDima)
